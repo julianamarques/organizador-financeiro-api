@@ -48,10 +48,10 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-class Usuario(models.Model):
+class Usuario(AbstractBaseUser, PermissionsMixin):
     nome = models.CharField(max_length=200)
     genero = models.CharField(max_length=1, choices=GENERO)
-    email = models.CharField(max_length=50)
+    email = models.CharField(max_length=50, unique=True)
     saldo = models.FloatField(default=0.0)
 
     is_active = models.BooleanField(default=True)
