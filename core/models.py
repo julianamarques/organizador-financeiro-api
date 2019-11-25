@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
 GENERO = [
@@ -16,15 +17,57 @@ TIPO_CARTAO = [
     ('C', 'Crédito'),
 ]
 
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, nome, password):
+        if not email:
+            raise ValueError('O usuário deve possuir um email válido!')
+
+        user = self.model(
+            email = self.normalize_email(email)
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self, email, nome, password):
+        user = self.create_user(
+            email=email,
+            nome=nome,
+            password=password
+        )
+
+        user.is_admin = True
+        user.is_superuser = True
+        user.is_staff = True
+
+        user.save(using=self._db)
+
+        return user
+
+
 class Usuario(models.Model):
     nome = models.CharField(max_length=200)
     genero = models.CharField(max_length=1, choices=GENERO)
     email = models.CharField(max_length=50)
-    saldo = models.FloatField()
-    senha = models.CharField(max_length=20)
+    saldo = models.FloatField(default=0.0)
+
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nome']
 
     def __str__(self):
         return self.nome
+
+    def save(self, *args, **kwargs):
+        super(Usuario, self).save()
 
 
 class Conta(models.Model):
