@@ -1,3 +1,3 @@
 # organizador-financeiro-api
 
-Projeto de programação pra internet utilizando Django Rest Framework.
+Projeto da disciplina de Programação para Internet utilizando o Django Rest Framework.
