@@ -13,7 +13,7 @@ class UsuarioList(generics.ListAPIView):
 
     def post(self, request):
         try:
-            user = Usuario.objects.create(name=request.data['nome'], genre=request.data['genero'], email=request.data['email'])
+            user = Usuario.objects.create(nome=request.data['nome'], genero=request.data['genero'], email=request.data['email'])
         
             user.set_password(request.data['password'])
             user.save()
