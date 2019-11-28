@@ -8,8 +8,9 @@ GENERO = [
 ]
 
 TIPO_CONTA = [
-    ('M', 'Masculino'),
-    ('F', 'Feminino'),
+    ('P', 'Poupança'),
+    ('CC', 'Corrente'),
+    ('C', 'Carteira'),
 ]
 
 TIPO_CARTAO = [
@@ -73,8 +74,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 class Conta(models.Model):
     nome = models.CharField(max_length=100)
     saldo = models.FloatField()
-    tipo = models.CharField(max_length=1, choices=TIPO_CONTA)
-    instituicao = models.CharField(max_length=100)
+    tipo = models.CharField(max_length=2, choices=TIPO_CONTA)
+    instituicao = models.CharField(max_length=100, blank=True)
     usuario = models.ForeignKey(Usuario,on_delete = models.CASCADE)
 
     def __str__(self):
@@ -84,9 +85,9 @@ class Conta(models.Model):
 class Cartao(models.Model):
     tipo = models.CharField(max_length=1,choices=TIPO_CARTAO)
     limite = models.FloatField()
-    conta = models.ForeignKey(Conta,on_delete=models.CASCADE)
-    data_encerramento_fatura = models.DateField()
-    data_vencimento = models.DateField()
+    conta = models.ForeignKey(Conta, on_delete=models.CASCADE)
+    dia_encerramento_fatura = models.PositiveSmallIntegerField()
+    dia_vencimento_fatura = models.PositiveSmallIntegerField()
     bandeira = models.CharField(max_length=20)
     usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE)
     numero = models.IntegerField()
