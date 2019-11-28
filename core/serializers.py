@@ -9,15 +9,19 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
 class CartaoSerializer(serializers.ModelSerializer):
+    usuario = serializers.SlugRelatedField(many=False, queryset=Usuario.objects.all(), slug_field='nome')
+
     class Meta:
         model = Cartao
-        fields = '__all__'
+        fields = ['id', 'tipo', 'limite', 'conta', 'data_encerramento_fatura', 'data_vencimento', 'bandeira', 'numero', 'usuario']
 
 
 class ContaSerializer(serializers.ModelSerializer):
+    usuario = serializers.SlugRelatedField(many=False, queryset=Usuario.objects.all(), slug_field='nome')
+
     class Meta:
         model = Conta
-        fields = '__all__'
+        fields = ['id', 'nome', 'saldo', 'tipo', 'instituicao', 'usuario']
 
 
 class LancamentoSerializer(serializers.ModelSerializer):
@@ -27,6 +31,8 @@ class LancamentoSerializer(serializers.ModelSerializer):
 
 
 class FaturaSerializer(serializers.ModelSerializer):
+    cartao = serializers.SlugRelatedField(many=False, queryset=Usuario.objects.all(), slug_field='bandeira')
+    
     class Meta:
         model = Fatura
-        fields = '__all__'
+        fields = ['referencia', 'valor' 'cartao']
