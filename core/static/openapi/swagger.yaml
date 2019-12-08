@@ -1,38 +1,32 @@
 swagger: "2.0"
 info:
-  description: "API pra controle e organização financeira, onde podem ser feitos registros de saldo em cada uma das contas, registro de fatura, lançamento de receitas e despesas."
+  description: "API pra controle e organização financeira, onde podem ser feitos registros de saldo em cada uma das contas, registro de fatura, lançamento de receitas e despesas. Projeto: https://github.com/julianamarques/organizador-financeiro-api"
   version: "1.0.0"
   title: "Organizador Financeiro API"
-  termsOfService: "http://swagger.io/terms/"
   contact:
     email: "paulo.rob159@gmail.com"
-  license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
+host: "localhost:800"
 basePath: "/v2"
 tags:
-- name: "Cartões"
+- name: "cartões"
   description: "Controle de cartões"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
-- name: "store"
-  description: "Access to Petstore orders"
 - name: "usuario"
-  description: "Operações com usuários"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
+  description: "Operações com usuários (Apenas para Admin)"
+- name: "faturas"
+  description: "Operações com faturas"
+- name: "lancamentos"
+  description: "Controle de lançamentos"
+- name: "contas"
+  description: "Controle de contas"
 schemes:
 - "https"
 - "http"
 paths:
-  /pet:
+  /cartoes/:
     post:
       tags:
-      - "pet"
-      summary: "Add a new pet to the store"
+      - "cartões"
+      summary: "Adiciona um novo cartão"
       description: ""
       operationId: "addPet"
       consumes:
@@ -44,21 +38,93 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "Pet object that needs to be added to the store"
+        description: "Campos do cartão"
         required: true
         schema:
-          $ref: "#/definitions/Pet"
+          $ref: "#/definitions/Cartao"
       responses:
+        201:
+          description: "Cartão criado com sucesso."
         405:
           description: "Invalid input"
       security:
       - petstore_auth:
         - "write:pets"
         - "read:pets"
+    get:
+      tags:
+      - "cartões"
+      summary: "Obtém todos os cartões do usuário"
+      description: ""
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "Opereção realizada com sucesso !"
+          schema:
+            $ref: '#/definitions/Cartao'
+        401:
+          description: "Você não tem autorização para isso"
+  /cartoes/{Id}:
+    get:
+      tags:
+      - "cartões"
+      summary: "Obtém um cartão"
+      description: "Retorna um único cartão"
+      operationId: "getCartaoById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "ID do cartão"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Cartao"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Pet not found"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "cartões"
+      summary: "Deleta um cartão"
+      description: ""
+      operationId: "deleteCartao"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "Id do cartão"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operação realizada com sucesso !"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Cartão não encontrado"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
     put:
       tags:
-      - "pet"
-      summary: "Update an existing pet"
+      - "cartões"
+      summary: "Atualiza um cartão"
       description: ""
       operationId: "updatePet"
       consumes:
@@ -68,322 +134,402 @@ paths:
       - "application/xml"
       - "application/json"
       parameters:
+      - name: "Id"
+        in: "path"
+        required: true
+        type: "string"
       - in: "body"
         name: "body"
         description: "Pet object that needs to be added to the store"
         required: true
         schema:
-          $ref: "#/definitions/Pet"
+          $ref: "#/definitions/Cartao"
       responses:
         400:
-          description: "Invalid ID supplied"
+          description: "ID inválido"
         404:
-          description: "Pet not found"
-        405:
-          description: "Validation exception"
+          description: "Cartão não encontrado"
       security:
       - petstore_auth:
         - "write:pets"
         - "read:pets"
-  /pet/findByStatus:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by status"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findPetsByStatus"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "status"
-        in: "query"
-        description: "Status values that need to be considered for filter"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "available"
-          - "pending"
-          - "sold"
-          default: "available"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid status value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByTags:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by tags"
-      description: "Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing."
-      operationId: "findPetsByTags"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "tags"
-        in: "query"
-        description: "Tags to filter by"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid tag value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-      deprecated: true
-  /pet/{petId}:
-    get:
-      tags:
-      - "pet"
-      summary: "Find pet by ID"
-      description: "Returns a single pet"
-      operationId: "getPetById"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - api_key: []
+  /faturas/:
     post:
       tags:
-      - "pet"
-      summary: "Updates a pet in the store with form data"
+        - "faturas"
+      summary: "Nova fatura"
       description: ""
-      operationId: "updatePetWithForm"
+      operationId: "addFatura"
       consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
+      - "application/json"
       - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet that needs to be updated"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "name"
-        in: "formData"
-        description: "Updated name of the pet"
-        required: false
-        type: "string"
-      - name: "status"
-        in: "formData"
-        description: "Updated status of the pet"
-        required: false
-        type: "string"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    delete:
-      tags:
-      - "pet"
-      summary: "Deletes a pet"
-      description: ""
-      operationId: "deletePet"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "api_key"
-        in: "header"
-        required: false
-        type: "string"
-      - name: "petId"
-        in: "path"
-        description: "Pet id to delete"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/{petId}/uploadImage:
-    post:
-      tags:
-      - "pet"
-      summary: "uploads an image"
-      description: ""
-      operationId: "uploadFile"
-      consumes:
-      - "multipart/form-data"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to update"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "additionalMetadata"
-        in: "formData"
-        description: "Additional data to pass to server"
-        required: false
-        type: "string"
-      - name: "file"
-        in: "formData"
-        description: "file to upload"
-        required: false
-        type: "file"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /store/inventory:
-    get:
-      tags:
-      - "store"
-      summary: "Returns pet inventories by status"
-      description: "Returns a map of status codes to quantities"
-      operationId: "getInventory"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            additionalProperties:
-              type: "integer"
-              format: "int32"
-      security:
-      - api_key: []
-  /store/order:
-    post:
-      tags:
-      - "store"
-      summary: "Place an order for a pet"
-      description: ""
-      operationId: "placeOrder"
       produces:
       - "application/xml"
       - "application/json"
       parameters:
       - in: "body"
         name: "body"
-        description: "order placed for purchasing the pet"
+        description: "Campos da fatura"
         required: true
         schema:
-          $ref: "#/definitions/Order"
+          $ref: "#/definitions/Fatura"
       responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid Order"
-  /store/order/{orderId}:
+        201:
+          description: "Nova fatura criada."
+        405:
+          description: "Invalid input"
     get:
       tags:
-      - "store"
-      summary: "Find purchase order by ID"
-      description: "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions"
-      operationId: "getOrderById"
+      - "faturas"
+      summary: "Obtém todas as faturas"
+      description: ""
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "Opereção realizada com sucesso !"
+          schema:
+            $ref: '#/definitions/Fatura'
+        401:
+          description: "Você não tem autorização para isso"
+  /faturas/{Id}:
+    get:
+      tags:
+      - "faturas"
+      summary: "Obtém uma fatura"
+      description: "Retorna uma única fatura"
+      operationId: "getFaturabyId"
       produces:
       - "application/xml"
       - "application/json"
       parameters:
-      - name: "orderId"
+      - name: "Id"
         in: "path"
-        description: "ID of pet that needs to be fetched"
+        description: "ID da fatura"
         required: true
         type: "integer"
-        maximum: 10.0
-        minimum: 1.0
         format: "int64"
       responses:
         200:
-          description: "successful operation"
+          description: "operação realizada com sucesso"
           schema:
-            $ref: "#/definitions/Order"
+            $ref: "#/definitions/Fatura"
         400:
-          description: "Invalid ID supplied"
+          description: "Id inválido"
         404:
-          description: "Order not found"
+          description: "Fatura não encontrada"
+      security:
+      - api_key: []
     delete:
       tags:
-      - "store"
-      summary: "Delete purchase order by ID"
-      description: "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors"
-      operationId: "deleteOrder"
+      - "faturas"
+      summary: "Deleta uma fatura"
+      description: ""
+      operationId: "deleteFatura"
       produces:
       - "application/xml"
       - "application/json"
       parameters:
-      - name: "orderId"
+      - name: "Id"
         in: "path"
-        description: "ID of the order that needs to be deleted"
+        description: "Id da fatura"
         required: true
         type: "integer"
-        minimum: 1.0
         format: "int64"
       responses:
+        200:
+          description: "Operação realizada com sucesso!"
         400:
-          description: "Invalid ID supplied"
+          description: "Id inválido"
         404:
-          description: "Order not found"
-  /usuarios:
+          description: "Fatura não encontrada"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+    put:
+      tags:
+      - "faturas"
+      summary: "Atualiza uma fatura"
+      description: ""
+      operationId: "updateFatura"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Campos da fatura"
+        required: true
+        schema:
+          $ref: "#/definitions/Fatura"
+      responses:
+        400:
+          description: "ID inválido"
+        404:
+          description: "Fatura não encontrada"
+  /lancamentos/:
+    post:
+      tags:
+        - "lancamentos"
+      summary: "Novo lançamento"
+      description: ""
+      operationId: "addLancamento"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Campos do lançamento"
+        required: true
+        schema:
+          $ref: "#/definitions/Lancamento"
+      responses:
+        201:
+          description: "Novo lançamento criado."
+        405:
+          description: "Invalid input"
+    get:
+      tags:
+      - "lancamentos"
+      summary: "Obtém todos os lançamentos"
+      description: ""
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "Opereção realizada com sucesso !"
+          schema:
+            $ref: '#/definitions/Lancamento'
+        401:
+          description: "Você não tem autorização para isso"
+  /lancamentos/{Id}:
+    get:
+      tags:
+      - "lancamentos"
+      summary: "Obtém um lançamento"
+      description: "Retorna um único lançamento"
+      operationId: "getLancamentobyId"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "ID do lançamento"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "operação realizada com sucesso"
+          schema:
+            $ref: "#/definitions/Lancamento"
+        400:
+          description: "Id inválido"
+        404:
+          description: "Lançamento não encontrado"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "lancamentos"
+      summary: "Deleta um lançamento"
+      description: ""
+      operationId: "deleteLancamento"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "Id do lançamento"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operação realizada com sucesso!"
+        400:
+          description: "Id inválido"
+        404:
+          description: "Lançamento não encontrado"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+    put:
+      tags:
+      - "lancamentos"
+      summary: "Atualiza um lançamento"
+      description: ""
+      operationId: "updateLancamento"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Campos do lançamento"
+        required: true
+        schema:
+          $ref: "#/definitions/Lancamento"
+      responses:
+        400:
+          description: "ID inválido"
+        404:
+          description: "Lançamento não encontrado"
+  /conta/:
+    post:
+      tags:
+        - "contas"
+      summary: "Nova conta"
+      description: "Cria uma nova conta bancária"
+      operationId: "addConta"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Campos da conta"
+        required: true
+        schema:
+          $ref: "#/definitions/Conta"
+      responses:
+        201:
+          description: "Nova conta criada."
+        405:
+          description: "Invalid input"
+    get:
+      tags:
+      - "contas"
+      summary: "Obtém todas as contas"
+      description: ""
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "Opereção realizada com sucesso !"
+          schema:
+            $ref: '#/definitions/Lancamento'
+        401:
+          description: "Você não tem autorização para isso"
+    
+  /conta/{Id}:
+    get:
+      tags:
+      - "contas"
+      summary: "Obtém uma conta"
+      description: "Retorna uma única conta"
+      operationId: "geContabyId"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "ID da conta"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "operação realizada com sucesso"
+          schema:
+            $ref: "#/definitions/Conta"
+        400:
+          description: "Id inválido"
+        404:
+          description: "Conta não encontrada"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "contas"
+      summary: "Deleta uma conta"
+      description: ""
+      operationId: "deleteConta"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "Id da conta"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Operação realizada com sucesso!"
+        400:
+          description: "Id inválido"
+        404:
+          description: "Conta não encontrada"
+      security:
+      - petstore_auth:
+        - "write:pets"
+        - "read:pets"
+    put:
+      tags:
+      - "contas"
+      summary: "Atualiza uma conta"
+      description: ""
+      operationId: "updateConta"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "Id"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Campos da conta"
+        required: true
+        schema:
+          $ref: "#/definitions/Conta"
+      responses:
+        400:
+          description: "ID inválido"
+        404:
+          description: "Conta não encontrada"
+    
+  /usuarios/:
     post:
       tags:
       - "usuario"
       summary: "Cria um usuário"
-      description: "Essa operação só pode ser utilizada se estiver logado."
+      description: "Essa operação só pode ser realizada se logado como Admin."
       operationId: "createUser"
       produces:
       - "application/xml"
@@ -400,50 +546,21 @@ paths:
           description: "Usuário criado com sucesso!"
         400:
           description: "Erro ao criar usuário"
-  /usuario/createWithArray:
-    post:
+    get:
       tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
+      - "usuario"
+      summary: "Obtém todos os usuários"
+      description: "Essa operação só pode ser realizada se logado como Admin"
       produces:
       - "application/xml"
       - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
       responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
+        200:
+          description: "Opereção realizada com sucesso !"
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          description: "Você não tem autorização para isso"
   /auth/login:
     post:
       tags:
@@ -479,27 +596,13 @@ paths:
             X-Rate-Limit:
               type: "integer"
               format: "int32"
-              description: "calls per hour allowed by the user"
+              description: "número de requests por hora permitidos pelo usuário"
             X-Expires-After:
               type: "string"
               format: "date-time"
-              description: "date in UTC when token expires"
+              description: "data expiração do Token"
         400:
           description: "Senha ou email inválido"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters: []
-      responses:
-        default:
-          description: "successful operation"
   /usuarios/{id}:
     get:
       tags:
@@ -588,43 +691,71 @@ securityDefinitions:
     name: "api_key"
     in: "header"
 definitions:
-  Order:
+  Lancamento:
     type: "object"
     properties:
-      id:
+      valor:
         type: "integer"
         format: "int64"
-      petId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
+      descricao:
         type: "string"
-        format: "date-time"
-      status:
+      categoria:
         type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-        default: false
+      data:
+        type: "string"
+      conta:
+        $ref: "#/definitions/Conta"
+      fatura:
+        $ref: '#/definitions/Fatura'
     xml:
-      name: "Order"
-  Category:
+      name: "Lancamento"
+  Conta:
     type: "object"
     properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
+      saldo:
+        type: "number"
+      nome:
         type: "string"
+      tipo:
+        type: "string"
+      instituicao:
+        type: "string"
+      usuario:
+        $ref: '#/definitions/User'
     xml:
-      name: "Category"
+      name: "Conta"
+  Cartao:
+    type: "object"
+    properties:
+      limite:
+        type: "number"
+      numero:
+        type: "number"
+      tipo:
+        type: "string"
+      bandeira:
+        type: "string"
+      dia_encerramento_fatura:
+        type: "string"
+      dia_vencimento_fatura:
+        type: "string"
+      conta:
+        $ref: '#/definitions/Conta'
+      usuario:
+        $ref: '#/definitions/User'
+    xml:
+      name: "Cartao"
+  Fatura:
+    type: "object"
+    properties:
+      conta:
+        $ref: '#/definitions/Conta'
+      referencia:
+        type: "string"
+      valor:
+        type: "number"
+    xml:
+      name: "Fatura"
   User:
     type: "object"
     properties:
@@ -641,53 +772,6 @@ definitions:
         type: "string"
     xml:
       name: "User"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
-        type: "array"
-        xml:
-          name: "photoUrl"
-          wrapped: true
-        items:
-          type: "string"
-      tags:
-        type: "array"
-        xml:
-          name: "tag"
-          wrapped: true
-        items:
-          $ref: "#/definitions/Tag"
-      status:
-        type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
   ApiResponse:
     type: "object"
     properties:
@@ -699,5 +783,5 @@ definitions:
       message:
         type: "string"
 externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  description: "Mais sobre a API"
+  url: "https://github.com/julianamarques/organizador-financeiro-api"
