@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
@@ -28,6 +28,7 @@ class UsuarioDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     name = 'usuario-detail'
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class ContaList(generics.ListCreateAPIView):

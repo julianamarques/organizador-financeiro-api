@@ -1,7 +1,10 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from .views import UsuarioList, UsuarioDetail, CartaoList, CartaoDetail, ContaList, ContaDetail, \
     FaturaList, FaturaDetail, LancamentoList, LancamentoDetail
 
+from django.conf.urls.static import static
+from configs import settings
 
 urlpatterns = [
     path('usuarios/', UsuarioList.as_view(), name=UsuarioList.name),
@@ -14,4 +17,5 @@ urlpatterns = [
     path('contas/<int:id>/', ContaDetail.as_view(), name=ContaDetail.name),
     path('lancamentos/', LancamentoList.as_view(), name=LancamentoList.name),
     path('lancamentos/<int:id>/', LancamentoDetail.as_view(), name=LancamentoDetail.name),
-]
+    path('openapi/', TemplateView.as_view(template_name="index.html")),
+] + static(settings.STATIC_URL)
