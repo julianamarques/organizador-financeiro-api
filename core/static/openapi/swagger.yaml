@@ -5,7 +5,7 @@ info:
   title: "Organizador Financeiro API"
   contact:
     email: "paulo.rob159@gmail.com"
-host: "localhost:800"
+host: "localhost:8000"
 basePath: "/v2"
 tags:
 - name: "cartões"
