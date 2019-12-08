@@ -53,7 +53,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     nome = models.CharField(max_length=200)
     genero = models.CharField(max_length=1, choices=GENERO)
     email = models.CharField(max_length=50, unique=True)
-    saldo = models.FloatField(default=0.0)
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -63,6 +62,16 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nome']
+
+    @property
+    def get_saldo_geral(self):
+        contas = Conta.objects.filter(usuario=self)
+        saldo = 0.0
+
+        for conta in contas:
+            saldo += conta.saldo
+
+        return saldo
 
     def __str__(self):
         return self.nome
