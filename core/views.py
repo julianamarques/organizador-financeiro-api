@@ -37,11 +37,6 @@ class ContaList(generics.ListCreateAPIView):
     serializer_class = ContaSerializer
     name = 'conta-list'
 
-    throttle_scope = 'api-throttle'
-    throttle_classes = [
-        ScopedRateThrottle,
-    ]
-
 
 class ContaDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Conta.objects.all()
@@ -53,11 +48,6 @@ class CartaoList(generics.ListCreateAPIView):
     queryset = Cartao.objects.all()
     serializer_class = CartaoSerializer
     name = 'cartao-list'
-
-    throttle_scope = 'api-throttle'
-    throttle_classes = [
-        ScopedRateThrottle,
-    ]
 
 
 class CartaoDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -71,11 +61,6 @@ class FaturaList(generics.ListCreateAPIView):
     serializer_class = FaturaSerializer
     name = 'fatura-list'
 
-    throttle_scope = 'api-throttle'
-    throttle_classes = [
-        ScopedRateThrottle,
-    ]
-
 
 class FaturaDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Fatura.objects.all()
@@ -87,11 +72,6 @@ class LancamentoList(generics.ListCreateAPIView):
     queryset = Lancamento.objects.all()
     serializer_class = LancamentoSerializer
     name = 'lancamento-list'
-
-    throttle_scope = 'api-throttle'
-    throttle_classes = [
-        ScopedRateThrottle,
-    ]
 
 
 class LancamentoDetail(generics.RetrieveUpdateDestroyAPIView):
