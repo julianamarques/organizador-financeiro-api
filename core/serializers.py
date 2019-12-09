@@ -8,20 +8,20 @@ class UsuarioSerializer(serializers.ModelSerializer):
         exclude = ['is_admin', 'is_active', 'is_staff']
 
 
-class CartaoSerializer(serializers.ModelSerializer):
+class CartaoSerializer(serializers.HyperlinkedModelSerializer):
     usuario = serializers.SlugRelatedField(many=False, queryset=Usuario.objects.all(), slug_field='nome')
 
     class Meta:
         model = Cartao
-        fields = ['id', 'tipo', 'limite', 'conta', 'dia_encerramento_fatura', 'dia_vencimento_fatura', 'bandeira', 'numero', 'usuario']
+        fields = ['id','url', 'tipo', 'limite', 'conta', 'dia_encerramento_fatura', 'dia_vencimento_fatura', 'bandeira', 'numero', 'usuario']
 
 
-class ContaSerializer(serializers.ModelSerializer):
+class ContaSerializer(serializers.HyperlinkedModelSerializer):
     usuario = serializers.SlugRelatedField(many=False, queryset=Usuario.objects.all(), slug_field='nome')
 
     class Meta:
         model = Conta
-        fields = ['id', 'nome', 'saldo', 'tipo', 'instituicao', 'usuario']
+        fields = ['id','url','nome', 'saldo', 'tipo', 'instituicao', 'usuario']
 
 
 class LancamentoSerializer(serializers.ModelSerializer):
