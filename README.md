@@ -24,4 +24,4 @@ e depois acesse ``localhost:8000/openapi/``
 
 #### Video Demonstrativo
 
-https://youtu.be/4LI_PVnBG88
+https://youtu.be/oTigX9temi4
