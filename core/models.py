@@ -102,7 +102,7 @@ class Cartao(models.Model):
     numero = models.IntegerField()
 
     def __str__(self):
-        return self.numero
+        return str(self.numero)
 
 
 class Fatura(models.Model):
@@ -111,7 +111,7 @@ class Fatura(models.Model):
     valor = models.FloatField()
 
     def __str__(self):
-        return self.referencia
+        return str(self.referencia)
 
 
 class Lancamento(models.Model):
@@ -123,4 +123,4 @@ class Lancamento(models.Model):
     data = models.DateField()
 
     def __str__(self):
-        return self.data + " " + self.categoria
+        return str(self.data + " " + self.categoria)

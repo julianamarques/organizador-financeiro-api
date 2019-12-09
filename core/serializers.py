@@ -24,18 +24,17 @@ class ContaSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id','url','nome', 'saldo', 'tipo', 'instituicao', 'usuario']
 
 
-class LancamentoSerializer(serializers.ModelSerializer):
-    cartao = serializers.SlugRelatedField(many=False, queryset=Cartao.objects.all(), slug_field='numero')
-    conta = serializers.SlugRelatedField(many=False, queryset=Cartao.objects.all(), slug_field='nome')
+class LancamentoSerializer(serializers.HyperlinkedModelSerializer):
+    conta = serializers.SlugRelatedField(many=False, queryset=Conta.objects.all(), slug_field='nome')
 
     class Meta:
         model = Lancamento
-        fields = ['id', 'cartao', 'conta', 'fatura', 'descricao', 'categoria', 'data', 'valor']
+        fields = ['id','url','conta', 'fatura', 'descricao', 'categoria', 'data', 'valor']
 
 
-class FaturaSerializer(serializers.ModelSerializer):
+class FaturaSerializer(serializers.HyperlinkedModelSerializer):
     cartao = serializers.SlugRelatedField(many=False, queryset=Cartao.objects.all(), slug_field='numero')
     
     class Meta:
         model = Fatura
-        fields = ['id', 'referencia', 'valor', 'cartao']
+        fields = ['id','url','referencia', 'valor', 'cartao']
