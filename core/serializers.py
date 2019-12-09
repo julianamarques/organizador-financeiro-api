@@ -5,7 +5,7 @@ from .models import Usuario, Cartao, Conta, Fatura, Lancamento
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        exclude = ['is_admin', 'is_active', 'is_staff', 'saldo']
+        exclude = ['is_admin', 'is_active', 'is_staff']
 
 
 class CartaoSerializer(serializers.ModelSerializer):
@@ -35,4 +35,4 @@ class FaturaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Fatura
-        fields = ['id', 'referencia', 'valor' 'cartao']
+        fields = ['id', 'referencia', 'valor', 'cartao']
