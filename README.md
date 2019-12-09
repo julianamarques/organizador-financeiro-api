@@ -20,3 +20,8 @@ e depois acesse ``localhost:8000/openapi/``
 ![Captura de Tela (3)](https://user-images.githubusercontent.com/33494009/70405406-d2b8ff80-1a1b-11ea-88d5-caea8c201848.png)
 
 ![Captura de Tela (2)](https://user-images.githubusercontent.com/33494009/70405419-e49aa280-1a1b-11ea-990e-07d23ba99280.png)
+
+
+#### Video Demonstrativo
+
+https://youtu.be/oTigX9temi4
